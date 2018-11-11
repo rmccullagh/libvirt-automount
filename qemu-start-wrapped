@@ -1,0 +1,45 @@
+#!/bin/bash
+
+create_dir() {
+  echo "creating /mnt/$1";
+  mkdir /mnt/$1
+}
+
+remove_mount() {
+  echo "removing directory /mnt/$GUEST_NAME";
+  rm -rf /mnt/$GUEST_NAME
+}
+
+if [ $# -lt 1 ]; then
+  echo "Did not receive enough arguments for this script $0" >&2
+  exit 1;
+fi
+
+GUEST_NAME=$1
+
+logger "started guest $GUEST_NAME, now checking that /mnt/$GUEST_NAME exists";
+if [[ ! -d "/mnt/$GUEST_NAME" ]]; then
+  logger "directory did not exist";
+  create_dir $GUEST_NAME
+else
+  logger "directory /mnt/$GUEST_NAME existed, attempting to umount";
+  umount /mnt/$GUEST_NAME
+  remove_mount $GUEST_NAME
+  create_dir $GUEST_NAME
+fi
+
+logger "attempting to mount remote filesystem over ssh, this might take a few seconds";
+
+for i in {1..5}; do
+  if sshfs ryan@$GUEST_NAME:/ /mnt/$GUEST_NAME -o allow_other,ServerAliveInterval=5,IdentityFile=/home/ryan/.ssh/id_rsa; then
+    status=$?
+    logger "success, mounted sshfs at /mnt/$GUEST_NAME";
+    break;
+  else
+    status=$?
+    logger "could not mount sshfs, sleeping for 5s and will try again, got exit status $status";
+    sleep 5s;
+  fi
+done
+
+exit $?;

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+create_dir() {
+  echo "creating /mnt/$1";
+  mkdir /mnt/$1
+}
+
+remove_mount() {
+  echo "removing directory /mnt/$GUEST_NAME";
+  rm -rf /mnt/$GUEST_NAME
+}
+
+if [ $# -lt 3 ]; then
+  echo "Did not receive enough arguments for this script $0" >&2
+  exit 1;
+fi
+
+GUEST_NAME=$1
+ACTION=$2
+
+if [[ "$ACTION" == "started" ]]; then
+  /etc/libvirt/hooks/mount-sshfs $GUEST_NAME
+  exit 0
+elif [[ "$ACTION" == "stopped" ]]; then
+  logger "stopped guest $GUEST_NAME, now cleaning up the ssfs file system mount";
+  if [[ -d "/mnt/$GUEST_NAME" ]]; then
+    logger "directory /mnt/$GUEST_NAME existed, attempting to umount";
+    if umount /mnt/$GUEST_NAME; then 
+      logger "success in umounting /mnt/$GUEST_NAME";
+      remove_mount $GUEST_NAME
+    else
+      echo "umount /mnt/$GUEST_NAME failed with exist status $?" >&2;
+      remove_mount $GUEST_NAME
+      exit 1;
+    fi
+  fi
+else
+  logger "libvirtd hook does not handle event $ACTION for guest $GUEST_NAME";
+fi
+
+exit 0;
