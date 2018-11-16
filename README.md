@@ -10,7 +10,9 @@ be started, and that doesn't happen as soon as libvirtd sends this hook.
 Use the [`started`](https://www.libvirt.org/hooks.html#qemu) hook to launch a script that calls into a C program that immediately forks, and exists the parent. The C program
 then calls `execlp('qemu-start-wrapped')`;
 
-  
+# Assumptions
+- The name of your VM, which is passed to your hook from libvirtd has a resolved name. For example, virtual machine with name (domname) `dns`, can be resolved on your machine. This can be accomplished by simply editing your `/etc/hosts` file.
+
 # Quick start
 To get started, edit `mount-sshfs.c`
 
