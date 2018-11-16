@@ -14,18 +14,17 @@ then calls `execlp('qemu-start-wrapped')`;
 - The name of your VM, which is passed to your hook from libvirtd has a resolved name. For example, virtual machine with name (domname) `dns`, can be resolved on your machine. This can be accomplished by simply editing your `/etc/hosts` file.
 
 # Quick start
-To get started, edit `mount-sshfs.c`
+To get started, Edit [qemu-start-wrapped](https://github.com/rmccullagh/libvirt-automount/blob/master/qemu-start-wrapped#L34) and replace `ryan` and `IdentityFile` with correct values
 
 Ensure up SSH key validation on the virtual machine, password login is not supported
     
   1. `git clone https://github.com/rmccullagh/libvirt-automount`
   2. `cd libvirt-automount`
-  3.  Edit [qemu-start-wrapped](https://github.com/rmccullagh/libvirt-automount/blob/master/qemu-start-wrapped#L34) and replace `ryan` and `IdentityFile` with correct values
-  4. `gcc -Wall -Wextra mount-sshfs.c -o mount-sshfs`
-  5. `sudo cp mount-ssfs /etc/libvirt/hooks/` 
-  6. `sudo cp qemu /etc/libvirt/hooks`
-  7. `sudo cp qemu-start-wrapped	 /etc/libvirt/hooks`
-  8. `sudo systemctl restart libvirtd.service`
+  3. `gcc -Wall -Wextra mount-sshfs.c -o mount-sshfs`
+  4. `sudo cp mount-ssfs /etc/libvirt/hooks/` 
+  5. `sudo cp qemu /etc/libvirt/hooks`
+  6. `sudo cp qemu-start-wrapped	 /etc/libvirt/hooks`
+  7. `sudo systemctl restart libvirtd.service`
   
   
  You can tail -f `/var/log/syslog` to see the messages written. 
