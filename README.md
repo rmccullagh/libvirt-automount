@@ -13,10 +13,9 @@ then calls `execlp('qemu-start-wrapped')`;
   
 # Quick start
 To get started, edit `mount-sshfs.c`
-  - Edit [qemu-start-wrapped](https://github.com/rmccullagh/libvirt-automount/blob/master/qemu-start-wrapped#L34) and replace `ryan` and `IdentityFile` with correct values
-  - Set up SSH key validation on the virtual machine, password login is not supported
-  
-  
+
+Ensure up SSH key validation on the virtual machine, password login is not supported
+    
   1. `git clone https://github.com/rmccullagh/libvirt-automount`
   2. `cd libvirt-automount`
   3.  Edit [qemu-start-wrapped](https://github.com/rmccullagh/libvirt-automount/blob/master/qemu-start-wrapped#L34) and replace `ryan` and `IdentityFile` with correct values
